@@ -1,10 +1,11 @@
 import random
-import os
 # Чтобы работал написанный на ЧЕРЕПАХЕ модуль, нужно импортировать не только его, но и САМУ ЧЕРЕПАХУ
 # Также внутри модуля не должно быть запущено функций. Иначе они сразу сработают при импортировании, а нам этого не надо
 import turtle
-import Turtle_Loser
+import os
+
 import Turtle_Winner
+import Turtle_Loser
 
 start = input('Добро пожаловать в игру! Начнем?(да/нет):\t')
 while True:
@@ -383,7 +384,7 @@ while True:
     while cont not in cont_list:
         cont = input('Ошибка. Введите "да", чтобы начать заново, или "нет", чтобы завершить программу:\t')
     if cont == 'да':
-        os.system('CLS')
+        os.system('cls||clear')
         continue
     elif cont == 'нет':
         break
