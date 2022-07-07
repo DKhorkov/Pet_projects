@@ -1,6 +1,8 @@
 """Класс корабля для использования в игре Alien Invasion."""
 import pygame
 
+from settings import Settings
+
 
 class Ship:
     """Корабль-Миша для борьбы с инопланетными Полинами."""
@@ -20,15 +22,24 @@ class Ship:
         # Создадим флаги для движения корабля
         self.moving_right = False
         self.moving_left = False
+        self.moving_up = False
+        self.moving_down = False
+
+        # Создадим атрибут скорости, чтобы настраивать скорость в модуле 'settings'.
+        self.settings = Settings()
+        self.speed = self.settings.ship_speed
 
     def update_ship_position(self):
         """Обновляет местонахождение корабля в зависимости от нажатия на кнопки пользователем."""
-        if self.moving_right:
-            self.rect.x += 1
-        elif self.moving_left:
-            self.rect.x -= 1
+        if self.moving_right and self.rect.right < self.screen_rect.right:  # Нельзя выйти за правую часть экрана.
+            self.rect.x += self.speed
+        elif self.moving_left and self.rect.left > 0:  # Нельзя выйти за левую часть экрана.
+            self.rect.x -= self.speed
+        elif self.moving_up and self.rect.top > self.screen_rect.top:  # Нельзя выйти за левую часть экрана.
+            self.rect.y -= self.speed
+        elif self.moving_down and self.rect.bottom < self.screen_rect.bottom:  # Нельзя выйти за левую часть экрана.
+            self.rect.y += self.speed
 
     def show_ship(self):
         """Выводит изображение корабля в текущей позиции."""
         self.screen.blit(self.image, self.rect)
-
