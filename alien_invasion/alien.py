@@ -27,7 +27,7 @@ class Alien(Sprite):
 
     def update(self):  # Чтобы флот двигался, метод должен быть назван именно 'update'.
         """Перемещение пришельцев вправо."""
-        self.x += self.settings.alien_speed * self.settings.fleet_direction
+        self.x += self.settings.alien_speed_factor * self.settings.fleet_direction
         self.rect.x = self.x
 
     def show_alien(self):

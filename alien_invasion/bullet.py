@@ -26,12 +26,13 @@ class Bullets(Sprite):
 
     def update(self):  # Чтобы пули летели, метод должен быть назван именно 'update'.
         """Обновляет местонахождение снаряда, который летит вверх по экрану."""
-        self.y -= self.settings.bullet_speed  # Обновление позиции снаряда.
+        self.y -= self.settings.bullet_speed_factor  # Обновление позиции снаряда.
         self.rect.y = self.y  # Обновляет позицию прямоугольника снаряда.
-        self.y2 -= self.settings.bullet_speed
+        self.y2 -= self.settings.bullet_speed_factor
         self.rect2.y = self.y2
 
     def draw_bullet(self):
         """Выводит снаряд на экран."""
         pygame.draw.rect(self.screen, self.color, self.rect)
         pygame.draw.rect(self.screen, self.color, self.rect2)
+
