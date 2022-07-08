@@ -21,7 +21,7 @@ class AlienInvasion:
 
         self.settings = Settings()
         self.screen = pygame.display.set_mode(
-                                        (self.settings.screen_width, self.settings.screen_height), pygame.FULLSCREEN)
+            (self.settings.screen_width, self.settings.screen_height), pygame.FULLSCREEN)
         pygame.display.set_caption('Alien Invasion')  # Устанавливает название окна игры.
 
         self.stats = GameStats(self.settings)  # Создаем экземпляр игровой статистики.
@@ -35,6 +35,8 @@ class AlienInvasion:
         self.__create_fleet()
 
         self.play_button = Button(self.screen, 'Play')  # Создание кнопки для начала игры.
+        self.pause_button = Button(self.screen, 'Pause')  # Создание кнопки для паузы игры.
+        self.stop_flag = False  # Флаг для корректной работы игры в режиме паузы.
 
     def __check_keydown_events(self, event):
         """Проверяет события при нажатии клавиш."""
@@ -51,7 +53,16 @@ class AlienInvasion:
         elif event.key == pygame.K_SPACE:  # Стреляем снарядами при нажатии пробела.
             self.__fire_bullet()
         elif event.key == pygame.K_p:  # Игра запустится при нажатии кнопки 'p' - play.
+            self.settings.initialize_dynamic_settings()  # При начале игры устанавливаются базовые настройки скорости.
             self.__start_game()
+        elif not self.stop_flag and event.key == pygame.K_ESCAPE:  # Игра ставится на паузу, если нажать клавишу "esc".
+            pygame.mouse.set_visible(True)
+            self.stop_flag = True
+            self.stats.game_active = False
+        elif self.stop_flag and event.key == pygame.K_ESCAPE:  # Продолжить игру после паузы.
+            pygame.mouse.set_visible(False)
+            self.stop_flag = False
+            self.stats.game_active = True
 
     def __check_keyup_events(self, event):
         """Проверяет события при отпускании клавиш."""
@@ -68,10 +79,19 @@ class AlienInvasion:
         """Проверяет, не нажата ли кнопка 'play_button'."""
         button_clicked = self.play_button.rect.collidepoint(mouse_position)
 
-        # Если игра активно, то нажатие на невидимую кнопку ее не перезапустит:
-        if button_clicked and not self.stats.game_active:
+        # Если игра активна и не на паузе, то нажатие на невидимую кнопку ее не перезапустит:
+        if button_clicked and not self.stop_flag and not self.stats.game_active:
             self.settings.initialize_dynamic_settings()  # При начале игры устанавливаются базовые настройки скорости.
             self.__start_game()
+
+    def __check_pause_button(self, mouse_position):
+        """Проверяет, не нажата ли кнопка 'pause_button'."""
+        button_clicked = self.pause_button.rect.collidepoint(mouse_position)
+
+        if button_clicked and self.stop_flag and not self.stats.game_active:
+            self.stop_flag = False
+            self.stats.game_active = True
+            pygame.mouse.set_visible(False)
 
     def __start_game(self):
         """Запуск игры."""
@@ -85,6 +105,7 @@ class AlienInvasion:
         # Создание нового флота и корабля в изначальной позиции:
         self.__create_fleet()
         self.ship.ship_start_position()
+        self.scoreboard.draw_level()  # При запуске игры уровень будет первым, а не тем, что был в конце прошлой игры.
         self.scoreboard.draw_score()  # При запуске игры количество очков будет равно нулю, а не итогу прошлой игры.
 
         pygame.mouse.set_visible(False)  # Скрыть мышь в активной игре.
@@ -101,6 +122,7 @@ class AlienInvasion:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 self.__check_play_button(mouse_pos)
+                self.__check_pause_button(mouse_pos)
 
     def __create_alien(self, alien_number, alien_row):
         """Создает одного пришельца."""
@@ -197,11 +219,16 @@ class AlienInvasion:
             for alians in collisions.values():
                 self.stats.score += self.settings.alien_points * len(alians)
             self.scoreboard.draw_score()
+            self.scoreboard.check_record()
         if not self.aliens:
             sleep(0.5)  # Пауза на пол секунды, чтобы игрок приготовился к новому флоту.
             self.bullets.empty()
             self.__create_fleet()
             self.settings.increase_game()  # Ускоряем игру при уничтожении всего флота.
+
+            # Увеличения значения уровня:
+            self.stats.level += 1
+            self.scoreboard.draw_level()
 
     def __update_bullets(self):
         """Обновляет снаряды и удаляет ненужные снаряды."""
@@ -228,8 +255,11 @@ class AlienInvasion:
 
         # Если игра неактивна, отображается кнопка 'play'.
         # Кнопка после отображения других объектов, чтобы быть поверх них.
-        if not self.stats.game_active:
+        if not self.stats.game_active and not self.stop_flag:
             self.play_button.draw_button()
+
+        if self.stop_flag:
+            self.pause_button.draw_button()
 
         pygame.display.flip()  # Обновляет экран пользователя после установления цвета и вывода корабля с пулями.
 

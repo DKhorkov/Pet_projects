@@ -13,8 +13,8 @@ class Button:
 
         # Установим размер и свойства кнопки:
         self.width, self.height = 200, 50
-        self.button_color = (255, 0, 0)
-        self.text_color = (255, 215, 0)
+        self.button_color = (255, 250, 250)
+        self.text_color = (0, 0, 255)
         self.font = pygame.font.SysFont(None, 48)  # Шрифт по умолчанию, размер текста 48.
 
         # Создание квадрата кнопки по центру экрана:
