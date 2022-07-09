@@ -40,13 +40,13 @@ class AlienInvasion:
 
     def __check_keydown_events(self, event):
         """Проверяет события при нажатии клавиш."""
-        if event.key == pygame.K_LEFT:
+        if event.key == pygame.K_LEFT or event.key == pygame.K_a:
             self.ship.moving_left = True
-        elif event.key == pygame.K_RIGHT:
+        elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
             self.ship.moving_right = True
-        elif event.key == pygame.K_UP:
+        elif event.key == pygame.K_UP or event.key == pygame.K_w:
             self.ship.moving_up = True
-        elif event.key == pygame.K_DOWN:
+        elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
             self.ship.moving_down = True
         elif event.key == pygame.K_q:  # Второй способ для пользователя закрыть программу, нажав 'q'.
             sys.exit()
@@ -66,13 +66,13 @@ class AlienInvasion:
 
     def __check_keyup_events(self, event):
         """Проверяет события при отпускании клавиш."""
-        if event.key == pygame.K_LEFT:
+        if event.key == pygame.K_LEFT or event.key == pygame.K_a:
             self.ship.moving_left = False
-        elif event.key == pygame.K_RIGHT:
+        elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
             self.ship.moving_right = False
-        elif event.key == pygame.K_UP:
+        elif event.key == pygame.K_UP or event.key == pygame.K_w:
             self.ship.moving_up = False
-        elif event.key == pygame.K_DOWN:
+        elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
             self.ship.moving_down = False
 
     def __check_play_button(self, mouse_position):
