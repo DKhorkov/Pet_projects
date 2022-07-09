@@ -1,23 +1,25 @@
 """Класс корабля для использования в игре Alien Invasion."""
 import pygame
+from pygame.sprite import Sprite
 
 from settings import Settings
 
 
-class Ship:
+class Ship(Sprite):
     """Корабль-Миша для борьбы с инопланетными Полинами."""
 
-    def __init__(self, screen):
+    def __init__(self, screen, picture):
         """Инициализация корабля и установление его изначальной позиции."""
+        super().__init__()
         # Присвоение экрана экземпляра класса 'AlienInvasion' атрибуту класса Ship для дальнейшего обращения.
         self.screen = screen
         self.screen_rect = screen.get_rect()  # Создаем прямоугольник экрана.
 
         # Загрузим картинку, которая будет использоваться как корабль (форма прямоугольник):
-        self.image = pygame.image.load('images/ship3.bmp')
+        # self.image = pygame.image.load('images/ship3.bmp') - было так, но тогда жизни и корабль одного размера.
+        self.image = pygame.image.load(picture)
         self.image.set_colorkey('black')  # Сделали прозрачным фон изображения, у которых цвет пикселей черный.
         self.rect = self.image.get_rect()  # Создаем прямоугольник с нашим изображением.
-        # self.rect.midbottom = self.screen_rect.midbottom  # Корабль появится внизу посередине.
         self.ship_start_position()
 
         # Создадим флаги для движения корабля

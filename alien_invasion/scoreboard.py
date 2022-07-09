@@ -1,6 +1,9 @@
 """Класс для представления очков игрока."""
 import pygame.font
 import json
+from pygame.sprite import Group
+
+from ship import Ship
 
 
 class Scoreboard:
@@ -20,6 +23,7 @@ class Scoreboard:
         self.draw_score()  # Преобразуем текст в изображение.
         self.draw_record()  # Преобразует рекорд в изображение.
         self.draw_level()  # Преобразует уровень в изображение.
+        self.draw_ships()
 
     def draw_score(self):
         """Рисует количество очков."""
@@ -58,6 +62,8 @@ class Scoreboard:
         self.screen.blit(self.score_image, self.score_rect)
         self.screen.blit(self.record_image, self.record_rect)
         self.screen.blit(self.level_image, self.level_rect)
+        self.screen.blit(self.ships_left_image, self.ships_left_rect)
+        self.ships.draw(self.screen)
 
     def check_record(self):
         """Проверяет, не побит ли рекорд."""
@@ -66,3 +72,18 @@ class Scoreboard:
             with open('record.txt', "w") as f:
                 json.dump(self.stats.record, f)
             self.draw_record()
+
+    def draw_ships(self):
+        """Рисует количество оставшихся жизней (кораблей) на экране."""
+        self.ships_left_image = self.font.render('LIVES LEFT:', True, self.text_color, 'black')
+        self.ships_left_rect = self.ships_left_image.get_rect()
+        self.ships_left_rect.left = 10
+        self.ships_left_rect.top = 10
+
+        self.ships = Group()
+        for ship_number in range(self.stats.ships_left):
+            ship = Ship(self.screen, 'images/ship_life.bmp')
+            ship.rect.x = 180 + ship_number * (ship.rect.width + 20)
+            ship.rect.y = 0
+            self.ships.add(ship)
+

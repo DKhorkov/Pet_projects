@@ -27,7 +27,7 @@ class AlienInvasion:
         self.stats = GameStats(self.settings)  # Создаем экземпляр игровой статистики.
         self.scoreboard = Scoreboard(self.screen, self.settings, self.stats)
 
-        self.ship = Ship(self.screen)  # Передаем атрибуту 'ship' атрибут экрана.
+        self.ship = Ship(self.screen, 'images/ship3.bmp')  # Передаем атрибуту 'ship' атрибут экрана.
 
         self.bullets = pygame.sprite.Group()  # Создаем "список", хранящий в себе выпущенные снаряды.
 
@@ -107,6 +107,7 @@ class AlienInvasion:
         self.ship.ship_start_position()
         self.scoreboard.draw_level()  # При запуске игры уровень будет первым, а не тем, что был в конце прошлой игры.
         self.scoreboard.draw_score()  # При запуске игры количество очков будет равно нулю, а не итогу прошлой игры.
+        self.scoreboard.draw_ships()  # Рисует кол-во жизней при запуске игры.
 
         pygame.mouse.set_visible(False)  # Скрыть мышь в активной игре.
 
@@ -129,7 +130,7 @@ class AlienInvasion:
         alien = Alien(self.screen, self.settings)
         alien_width, alien_height = alien.rect.size
         alien.x = 0.5 * alien_width + 2 * alien_width * alien_number  # Создает сдвиг каждого нового пришельца вправо.
-        alien.y = 0.5 * alien_height + 2 * alien_height * alien_row  # Расстояние между рядами.
+        alien.y = 1 * alien_height + 1.5 * alien_height * alien_row  # Расстояние между рядами.
         alien.rect.x = alien.x
         alien.rect.y = alien.y
         self.aliens.add(alien)  # Добавляем созданный экземпляр в группу пришельцев.
@@ -176,6 +177,7 @@ class AlienInvasion:
         """Обработка столкновения пришельцев с кораблем."""
         if self.stats.ships_left > 1:  # Проверка наличия оставшихся кораблей.
             self.stats.ships_left -= 1  # Уменьшаем количество кораблей при столкновении.
+            self.scoreboard.draw_ships()
 
             # Очистим флот и пули:
             self.bullets.empty()
