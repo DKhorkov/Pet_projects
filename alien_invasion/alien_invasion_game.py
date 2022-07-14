@@ -158,6 +158,7 @@ class AlienInvasion:
 
         if button_clicked and self.stop_flag and not self.stats.game_active:
             self.stop_flag = False
+            self.stats.game_active = True
 
     def __start_game(self):
         """Запуск игры."""
@@ -339,7 +340,7 @@ class AlienInvasion:
         while True:
             # Отслеживание действий пользователя на клавиатуре или с помощью мыши. Если "выход", то закрыть игру.
             self.__check_events()
-            if self.level_selected:
+            if self.level_selected and self.stats.game_active:
                 self.ship.update_ship_position()
                 self.__update_bullets()  # Позиция пуль должна меняться после изменения позиции корабля.
                 self.__update_aliens()
