@@ -38,6 +38,52 @@ class AlienInvasion:
         self.pause_button = Button(self.screen, 'Pause')  # Создание кнопки для паузы игры.
         self.stop_flag = False  # Флаг для корректной работы игры в режиме паузы.
 
+        self.__create_level_buttons()
+
+    def __create_level_buttons(self):
+        """Создание кнопок для выбора сложности"""
+        self.easy_level_button = Button(self.screen, 'EASY')
+        self.easy_level_button.rect.x -= 300
+        self.easy_level_button.rect.y += 100
+        self.easy_level_button.text_image_rect.center = self.easy_level_button.rect.center
+
+        self.medium_level_button = Button(self.screen, 'MEDIUM')
+        self.medium_level_button.rect.y += 100
+        self.medium_level_button.text_image_rect.center = self.medium_level_button.rect.center
+
+        self.hard_level_button = Button(self.screen, 'HARD')
+        self.hard_level_button.rect.x += 300
+        self.hard_level_button.rect.y += 100
+        self.hard_level_button.text_image_rect.center = self.hard_level_button.rect.center
+        self.level_selected = False
+
+    def __screen_changes_after_lvl_selection(self):
+        """Изменения атрибутов и их прорисовка на экране после выбора уровня сложности пользователем"""
+        self.ship.ship_start_position()
+        self.scoreboard.draw_ships()  # Рисует кол-во жизней при запуске игры.
+        self.scoreboard.draw_level()  # При запуске игры рисует уровень сложности.
+        self.scoreboard.draw_score()  # При запуске игры количество очков будет равно нулю.
+        self.level_selected = True
+        pygame.mouse.set_visible(False)
+
+    def __check_game_level(self, event):
+        """Выбор уровня игры"""
+        if event.key == pygame.K_h:
+            for i in range(self.settings.hard_level):
+                self.settings.increase_game()
+            self.stats.reset_stats()  # Сброс игровой статистики при нажатии кнопки.
+            self.stats.level = self.settings.hard_level
+            self.__screen_changes_after_lvl_selection()
+        elif event.key == pygame.K_m:
+            for i in range(self.settings.medium_level):
+                self.settings.increase_game()
+            self.stats.reset_stats()  # Сброс игровой статистики при нажатии кнопки.
+            self.stats.level = self.settings.medium_level
+            self.__screen_changes_after_lvl_selection()
+        elif event.key == pygame.K_e:
+            self.stats.reset_stats()  # Сброс игровой статистики при нажатии кнопки.
+            self.__screen_changes_after_lvl_selection()
+
     def __check_keydown_events(self, event):
         """Проверяет события при нажатии клавиш."""
         if event.key == pygame.K_LEFT or event.key == pygame.K_a:
@@ -63,6 +109,8 @@ class AlienInvasion:
             pygame.mouse.set_visible(False)
             self.stop_flag = False
             self.stats.game_active = True
+        elif self.stats.game_active and not self.level_selected:  # Выбор сложности, чтобы начать игру.
+            self.__check_game_level(event)
 
     def __check_keyup_events(self, event):
         """Проверяет события при отпускании клавиш."""
@@ -84,32 +132,45 @@ class AlienInvasion:
             self.settings.initialize_dynamic_settings()  # При начале игры устанавливаются базовые настройки скорости.
             self.__start_game()
 
+    def __check_lvl_buttons_vs_mouse_collision(self, mouse_position):
+        """Проверяет, не нажата ли одна из кнопок сложности мышкой."""
+        easy_button_clicked = self.easy_level_button.rect.collidepoint(mouse_position)
+        medium_button_clicked = self.medium_level_button.rect.collidepoint(mouse_position)
+        hard_button_clicked = self.hard_level_button.rect.collidepoint(mouse_position)
+        if easy_button_clicked and self.stats.game_active and not self.level_selected:
+            self.__screen_changes_after_lvl_selection()
+        elif medium_button_clicked and self.stats.game_active and not self.level_selected:
+            for i in range(self.settings.medium_level):
+                self.settings.increase_game()
+            self.stats.reset_stats()  # Сброс игровой статистики при нажатии кнопки.
+            self.stats.level = self.settings.medium_level
+            self.__screen_changes_after_lvl_selection()
+        elif hard_button_clicked and self.stats.game_active and not self.level_selected:
+            for i in range(self.settings.hard_level):
+                self.settings.increase_game()
+            self.stats.reset_stats()  # Сброс игровой статистики при нажатии кнопки.
+            self.stats.level = self.settings.hard_level
+            self.__screen_changes_after_lvl_selection()
+
     def __check_pause_button(self, mouse_position):
         """Проверяет, не нажата ли кнопка 'pause_button'."""
         button_clicked = self.pause_button.rect.collidepoint(mouse_position)
 
         if button_clicked and self.stop_flag and not self.stats.game_active:
             self.stop_flag = False
-            self.stats.game_active = True
-            pygame.mouse.set_visible(False)
 
     def __start_game(self):
         """Запуск игры."""
-        self.stats.reset_stats()  # Сброс игровой статистики при нажатии кнопки.
         self.stats.game_active = True
 
-        # Очистка списков пришельцев и снарядов:
-        self.aliens.empty()
-        self.bullets.empty()
+        if self.level_selected:
+            # Очистка списков пришельцев и снарядов:
+            self.aliens.empty()
+            self.bullets.empty()
 
-        # Создание нового флота и корабля в изначальной позиции:
-        self.__create_fleet()
-        self.ship.ship_start_position()
-        self.scoreboard.draw_level()  # При запуске игры уровень будет первым, а не тем, что был в конце прошлой игры.
-        self.scoreboard.draw_score()  # При запуске игры количество очков будет равно нулю, а не итогу прошлой игры.
-        self.scoreboard.draw_ships()  # Рисует кол-во жизней при запуске игры.
-
-        pygame.mouse.set_visible(False)  # Скрыть мышь в активной игре.
+            # Создание нового флота и корабля в изначальной позиции:
+            self.__create_fleet()
+            pygame.mouse.set_visible(False)  # Скрыть мышь в активной игре.
 
     def __check_events(self):  # Делаем метод приватным.
         """Проверяет события в программе."""
@@ -123,6 +184,7 @@ class AlienInvasion:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 self.__check_play_button(mouse_pos)
+                self.__check_lvl_buttons_vs_mouse_collision(mouse_pos)
                 self.__check_pause_button(mouse_pos)
 
     def __create_alien(self, alien_number, alien_row):
@@ -190,7 +252,9 @@ class AlienInvasion:
             # Пауза до создания нового флота
             sleep(1)  # 1 sec.
         else:
+            self.stats.reset_stats()  # Сброс игровой статистики при нажатии кнопки.
             self.stats.game_active = False
+            self.level_selected = False
             pygame.mouse.set_visible(True)  # Снова делает курсор мыши видимым, когда игра неактивна.
 
     def __check_aliens_and_bottom(self):
@@ -260,6 +324,11 @@ class AlienInvasion:
         if not self.stats.game_active and not self.stop_flag:
             self.play_button.draw_button()
 
+        if self.stats.game_active and not self.level_selected:
+            self.easy_level_button.draw_button()
+            self.medium_level_button.draw_button()
+            self.hard_level_button.draw_button()
+
         if self.stop_flag:
             self.pause_button.draw_button()
 
@@ -270,7 +339,7 @@ class AlienInvasion:
         while True:
             # Отслеживание действий пользователя на клавиатуре или с помощью мыши. Если "выход", то закрыть игру.
             self.__check_events()
-            if self.stats.game_active:
+            if self.level_selected:
                 self.ship.update_ship_position()
                 self.__update_bullets()  # Позиция пуль должна меняться после изменения позиции корабля.
                 self.__update_aliens()

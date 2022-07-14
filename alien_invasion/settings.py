@@ -23,6 +23,9 @@ class Settings:
         self.speedup_scale = 1.1  # Темп ускорения игры.
         self.score_scale = 1.5  # Темп увеличения получения очков за убитого пришельца.
 
+        self.hard_level = 10
+        self.medium_level = 5
+
         self.initialize_dynamic_settings()
 
     def initialize_dynamic_settings(self):
