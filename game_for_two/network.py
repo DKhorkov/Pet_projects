@@ -9,8 +9,11 @@ class Network:
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.address = (self.server, self.port)
 
-        self.id = self.connect()  # Создаем ID пользователя, чтобы он потом понимал, первый он или второй игрок
-        print(self.id)
+        self.pos = self.connect()  # Получаем позицию игрока
+        # print(self.pos)
+
+    def get_pos(self):
+        return self.pos
 
     def connect(self):
         """Метод подключения клиента к серверу."""
@@ -29,7 +32,7 @@ class Network:
             print(e)
 
 
-if __name__ == "__main__":
-    network = Network("", 5555)
-    network.send("hello")
-    network.send("world")
+# if __name__ == "__main__":
+#     network = Network("", 5555)
+#     network.send("hello")
+#     network.send("world")
