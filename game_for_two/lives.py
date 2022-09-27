@@ -1,6 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 
+
 class Lives(Sprite):
     """Класс для рисования жизней игроков."""
 

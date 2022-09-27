@@ -1,4 +1,4 @@
-# Игра с квадартами для двоих.
+# Игра с квадратами для двоих.
 import pygame
 from pygame.sprite import Group
 from time import sleep
@@ -40,7 +40,6 @@ class GameForTwo:
         if button_clocked and not self.game_active:
             self.game_active = True
             self._reset_stats()
-
 
     def _create_moving_flags(self):
         """Создание флагов для движения квадратов."""
@@ -88,6 +87,8 @@ class GameForTwo:
         self.scoreboard.second_square.lives = self.settings.lives
         self.scoreboard.draw_first_square_lives()
         self.scoreboard.draw_second_square_lives()
+        self.settings.square_start_position_1(self.first_square)
+        self.settings.square_start_position_2(self.second_square)
 
     def _check_keyup_events(self, event):
         """Проверка событий при отпускании клавиш клавиатуры."""
@@ -183,4 +184,3 @@ class GameForTwo:
 if __name__ == '__main__':
     game = GameForTwo()
     game.run_game()
-
