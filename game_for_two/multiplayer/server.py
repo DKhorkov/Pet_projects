@@ -1,25 +1,18 @@
 import socket
-import os
 from _thread import start_new_thread
+import pickle
+
+from player import Player
 
 
 class Server:
 
     def __init__(self, server, port, num_to_listen):
-        self.positions = [(0, 0), (200, 200)]
+        self.players = [Player(0, 0, 50, 50, 'green'), Player(0, 200, 50, 50, 'red')]
         self.server = server
         self.port = port
         self.num_to_listen = num_to_listen
         self.current_player = 0
-
-    def read_pos(self, string):
-        """Поскольку отправялем на сервер строки, необходимо их обработать для изменения позиции квадрата"""
-        strn = string.split(",")
-        return int(strn[0]), int(strn[1])
-
-    def make_pos(self, tup):
-        """Для отправки инфы на сервер, необходимо преобразовать ее в строку"""
-        return str(tup[0]) + "," + str(tup[1])
 
     def __create_socket(self):
         """Создаем соккет для приема соединений от пользователей."""
@@ -30,13 +23,13 @@ class Server:
     def __create_thread_for_client(self, connection, player):
         """Создаем поток для обработки информации от пользователя, которая должна прийти на сервер для обработки,
         но не должна заставлять программу подвисать в основном цикле, пока вычисляется инфа."""
-        connection.send(str.encode(self.make_pos(self.positions[player])))
+        connection.send(pickle.dumps(self.players[player]))  # Записываем объект в файл
         self.reply = ""  # Создаем переменную для ответа от сервера
         while True:
             try:
-                self.data = self.read_pos(connection.recv(2048).decode())  # принимаем данные от клиента, по 1024 байт
+                self.data = pickle.loads(connection.recv(2048))  # Загружаем объект из файла
                 # self.reply = self.data.decode('UTF-8')
-                self.positions[player] = self.data
+                self.players[player] = self.data
 
                 # Если клиент ничего не отправляет на сервер - выводим инфу о том, что он отключился и заканчиваем цикл.
                 if not self.data:
@@ -44,13 +37,13 @@ class Server:
                     break
                 else:
                     if player == 1:
-                        self.reply = self.positions[0]
+                        self.reply = self.players[0]
                     else:
-                        self.reply = self.positions[1]
+                        self.reply = self.players[1]
                     print(f'Received: {self.data}')
                     print(f'Sending: {self.reply}')
 
-                connection.sendall(str.encode(self.make_pos(self.reply)))  # Отправка обратно закодированных данных нашему серверу
+                connection.sendall(pickle.dumps(self.reply))  # Отправка обратно закодированных данных нашему серверу
             except:
                 print('Some error appeared')
                 break
@@ -70,5 +63,5 @@ class Server:
 
 
 if __name__ == "__main__":
-    server = Server("192.168.0.111", 5555, 2)
+    server = Server("", 5555, 2)
     server.main()

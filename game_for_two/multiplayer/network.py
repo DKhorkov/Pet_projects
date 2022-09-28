@@ -1,4 +1,5 @@
 import socket
+import pickle
 
 
 class Network:
@@ -9,25 +10,25 @@ class Network:
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.address = (self.server, self.port)
 
-        self.pos = self.connect()  # Получаем позицию игрока
+        self.player = self.connect()
         # print(self.pos)
 
-    def get_pos(self):
-        return self.pos
+    def get_player(self):
+        return self.player
 
     def connect(self):
         """Метод подключения клиента к серверу."""
         try:
             self.client.connect(self.address)
-            return self.client.recv(2048).decode()
+            return pickle.loads(self.client.recv(2048))
         except:
             print('Connection error appeared')
 
     def send(self, data):
         """Метод по отправке информации на сервер."""
         try:
-            self.client.send(str.encode(data))
-            return self.client.recv(2048).decode()
+            self.client.send(pickle.dumps(data))
+            return pickle.loads(self.client.recv(2048))
         except socket.error as e:
             print(e)
 

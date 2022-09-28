@@ -35,9 +35,9 @@ class GameForTwo:
 
     def _check_play_button(self, mouse_position):
         """Проверка нажатия мышкой"""
-        button_clocked = self.play_button.rect.collidepoint(mouse_position)
+        button_clicked = self.play_button.rect.collidepoint(mouse_position)
 
-        if button_clocked and not self.game_active:
+        if button_clicked and not self.game_active:
             self.game_active = True
             self._reset_stats()
 
