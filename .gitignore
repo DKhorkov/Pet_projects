@@ -1,3 +1,4 @@
 /.idea/
 /game_for_two/__pycache__/
 game_for_two/multiplayer/__pycache__/
+game_for_two/multiplayer/testing_network/__pycache__/

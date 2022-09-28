@@ -18,8 +18,10 @@ def redraw_window(win, player, player_2):
 def main():
     run = True
     network = Network("", 5555)
+    clock = pygame.time.Clock()
     p1 = network.get_player()
     while run:
+        clock.tick(60)
         p2 = network.send(p1)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
