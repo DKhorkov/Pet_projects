@@ -2,7 +2,7 @@ import socket
 from _thread import start_new_thread
 import pickle
 
-from player import Player
+from player import Player1, Player2
 from settings import Settings
 
 
@@ -10,10 +10,10 @@ class Server:
 
     def __init__(self, server, port, num_to_listen):
         self.settings = Settings()
-        self.players = [Player(self.settings.square_1_x, self.settings.square_1_y, self.settings.square_face,
-                               self.settings.square_1_color),
-                        Player(self.settings.square_2_x, self.settings.square_2_y, self.settings.square_face,
-                               self.settings.square_2_color)]
+        self.players = [Player1(self.settings.square_1_x, self.settings.square_1_y, self.settings.square_face,
+                                self.settings.square_1_color),
+                        Player2(self.settings.square_2_x, self.settings.square_2_y, self.settings.square_face,
+                                self.settings.square_2_color)]
         self.server = server
         self.port = port
         self.num_to_listen = num_to_listen

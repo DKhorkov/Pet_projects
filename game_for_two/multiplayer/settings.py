@@ -22,7 +22,7 @@ class Settings:
         self.bullet_widht = 40
         self.bullet_height = 15
         self.bullet_color = 'white'
-        self.bullets_limit = 3
+        self.bullets_limit = 1
 
         self.square_speed = 10
-        self.bullet_speed = 2
+        self.bullet_speed = 20

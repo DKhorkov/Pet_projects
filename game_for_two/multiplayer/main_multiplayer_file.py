@@ -22,6 +22,8 @@ class MultiplayerGame:
     def redraw_window(self, player, player_2):
         self.screen.fill(self.settings.screen_color)
         player.draw_rect(self.screen)
+        for bullet in player.bullets:
+            bullet.draw_bullet(self.screen)
         player_2.draw_rect(self.screen)
         pygame.display.update()
 
