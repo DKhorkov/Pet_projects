@@ -1,3 +1,5 @@
+import time
+from time import sleep
 import pygame
 
 from network import Network
@@ -29,9 +31,18 @@ class MultiplayerGame:
             bullet.draw_bullet(self.screen)
         pygame.display.update()
 
+    def _check_collision(self):
+        """Проверка столкновения объектов."""
+        # ССтолкновение пуль:
+        pygame.sprite.groupcollide(self.player_1.bullets, self.player_2.bullets, True, True)
+        collision = pygame.sprite.spritecollideany(self.player_1, self.player_2.bullets)
+        if collision:
+            self.player_1.start_pos()
+
     def run_client(self):
         while self.game_active:
             self.clock.tick(60)
+            self._check_collision()
             self.player_2 = self.network.send(self.player_1)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

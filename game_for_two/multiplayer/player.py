@@ -15,7 +15,7 @@ class Player1:
         self.color = square_color
         self.bullets = pygame.sprite.Group()
 
-        self.rect = (self.x, self.y, self.width, self.height)
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw_rect(self, win):
         pygame.draw.rect(win, self.color, self.rect)
@@ -38,8 +38,12 @@ class Player1:
         self.update_position()
 
     def update_position(self):
-        self.rect = (self.x, self.y, self.width, self.height)
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.check_bullets()
+
+    def start_pos(self):
+        self.x = self.settings.square_1_x
+        self.y = self.settings.square_1_y
 
     def check_bullets(self):
         for bullet in self.bullets.sprites():
@@ -72,4 +76,8 @@ class Player2(Player1):
             bullet.update_bullet_position_2()
             if bullet.rect.left < 20:
                 self.bullets.remove(bullet)
+
+    def start_pos(self):
+        self.x = self.settings.square_2_x
+        self.y = self.settings.square_2_y
 
