@@ -6,6 +6,7 @@ from settings import Settings
 class Player:
 
     def __init__(self, x, y, square_face, square_color):
+        self.settings = Settings()
         self.x = x
         self.y = y
         self.width = square_face
@@ -20,9 +21,9 @@ class Player:
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_w]:
-            self.y -= 1
+            self.y -= self.settings.square_speed
         elif keys[pygame.K_s]:
-            self.y += 1
+            self.y += self.settings.square_speed
         self.update_position()
 
     def update_position(self):

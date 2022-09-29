@@ -33,7 +33,6 @@ class Server:
         while True:
             try:
                 self.data = pickle.loads(connection.recv(2048))  # Загружаем объект из файла
-                # self.reply = self.data.decode('UTF-8')
                 self.players[player] = self.data
 
                 # Если клиент ничего не отправляет на сервер - выводим инфу о том, что он отключился и заканчиваем цикл.

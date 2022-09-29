@@ -24,5 +24,5 @@ class Settings:
         self.bullet_color = 'white'
         self.bullets_limit = 3
 
-        self.square_speed = 1
+        self.square_speed = 10
         self.bullet_speed = 2

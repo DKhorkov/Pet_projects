@@ -20,7 +20,7 @@ class MultiplayerGame:
         self.clock = pygame.time.Clock()
 
     def redraw_window(self, player, player_2):
-        self.screen.fill((255, 255, 255))
+        self.screen.fill(self.settings.screen_color)
         player.draw_rect(self.screen)
         player_2.draw_rect(self.screen)
         pygame.display.update()
