@@ -25,6 +25,8 @@ class MultiplayerGame:
         for bullet in player.bullets:
             bullet.draw_bullet(self.screen)
         player_2.draw_rect(self.screen)
+        for bullet in player_2.bullets:
+            bullet.draw_bullet(self.screen)
         pygame.display.update()
 
     def run_client(self):
