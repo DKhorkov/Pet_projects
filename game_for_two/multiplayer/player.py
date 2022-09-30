@@ -7,6 +7,7 @@ from bullet import Bullet
 class Player1:
 
     def __init__(self, x, y, square_face, square_color):
+        pygame.init()
         self.settings = Settings()
         self.x = x
         self.y = y
@@ -14,6 +15,7 @@ class Player1:
         self.height = square_face
         self.color = square_color
         self.bullets = pygame.sprite.Group()
+        self.lives = self.settings.lives
 
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
@@ -24,7 +26,7 @@ class Player1:
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_w]:
-            if self.y > 20:
+            if self.y > 60:
                 self.y -= self.settings.square_speed
         elif keys[pygame.K_s]:
             if self.y < (self.settings.screen_height - self.settings.square_face - 20):
@@ -58,7 +60,7 @@ class Player2(Player1):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_w]:
-            if self.y > 20:
+            if self.y > 60:
                 self.y -= self.settings.square_speed
         elif keys[pygame.K_s]:
             if self.y < (self.settings.screen_height - self.settings.square_face - 20):
@@ -80,4 +82,3 @@ class Player2(Player1):
     def start_pos(self):
         self.x = self.settings.square_2_x
         self.y = self.settings.square_2_y
-
